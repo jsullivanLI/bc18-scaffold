@@ -6,11 +6,20 @@ import traceback
 directions = list(bc.Direction)
 
 
-def do_planet_tasks(gc):
+def do_planet_tasks(gc: bc.GameController):
     my_team = gc.team()
     print("Working On Earth")
     # walk through our units:
     for unit in gc.my_units():
+
+        # send some rockets
+        if unit.unit_type == bc.UnitType.Rocket:
+            mars_map = gc.starting_map(bc.Planet.Mars)
+            x = random.randint(0, mars_map.width)
+            y = random.randint(0, mars_map.height)
+            landing = bc.MapLocation(bc.Planet.Mars, x, y)
+            if gc.can_launch_rocket(unit.id, landing):
+                gc.launch_rocket(unit.id, landing)
 
         # first, factory logic
         if unit.unit_type == bc.UnitType.Factory:
@@ -45,8 +54,10 @@ def do_planet_tasks(gc):
         # pick a random direction:
         d = random.choice(directions)
 
-        # or, try to build a factory:
-        if gc.karbonite() > bc.UnitType.Factory.blueprint_cost() and gc.can_blueprint(unit.id, bc.UnitType.Factory, d):
+        # or, try to build a rocket:
+        if gc.karbonite() > bc.UnitType.Rocket.blueprint_cost() and gc.can_blueprint(unit.id, bc.UnitType.Rocket, d):
+            gc.blueprint(unit.id, bc.UnitType.Rocket, d)
+        elif gc.karbonite() > bc.UnitType.Factory.blueprint_cost() and gc.can_blueprint(unit.id, bc.UnitType.Factory, d):
             gc.blueprint(unit.id, bc.UnitType.Factory, d)
         # and if that fails, try to move
         elif gc.is_move_ready(unit.id) and gc.can_move(unit.id, d):
