@@ -5,7 +5,6 @@ import traceback
 
 directions = list(bc.Direction)
 max_workers = 5
-max_factories = 5
 
 def count_units(units, unitType):
     # counting units of a certain type
@@ -13,6 +12,14 @@ def count_units(units, unitType):
     for unit in units:
         if unit.unit_type == unitType:
             result = result + 1
+
+    return result
+
+def get_random_directions():
+    result = []
+    rnum = random.randint(0, 8)
+    for x in range(9):
+        result.append(directions[(x + rnum) % 8])
 
     return result
 
@@ -49,7 +56,7 @@ def do_planet_tasks(gc: bc.GameController):
                             print('attacked a thing!')
                             continue
                 elif gc.is_move_ready(unit.id):
-                    for d in directions:
+                    for d in get_random_directions():
                         if gc.can_move(unit.id, d):
                             gc.move_robot(unit.id, d)
 
@@ -63,6 +70,6 @@ def do_planet_tasks(gc: bc.GameController):
                         gc.harvest(unit.id, d)
                         print('collected karbonite!')
                 # Move
-                for d in directions:
+                for d in get_random_directions():
                     if gc.can_move(unit.id, d) and gc.is_move_ready(unit.id):
                         gc.move_robot(unit.id, d)
