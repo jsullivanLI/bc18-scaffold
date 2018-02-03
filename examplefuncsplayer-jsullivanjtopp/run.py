@@ -12,7 +12,6 @@ print("pystarting")
 # A GameController is the main type that you talk to the game with.
 # Its constructor will connect to a running game.
 gc = bc.GameController()
-directions = list(bc.Direction)
 
 print("pystarted")
 
@@ -27,11 +26,11 @@ gc.queue_research(bc.UnitType.Rocket)
 gc.queue_research(bc.UnitType.Worker)
 gc.queue_research(bc.UnitType.Knight)
 
-my_team = gc.team()
-
 while True:
     # We only support Python 3, which means brackets around print()
-    print('pyround:', gc.round(), 'time left:', gc.get_time_left_ms(), 'ms')
+    print('pyround:', gc.round(), 'time left:', gc.get_time_left_ms(), 'ms', 'karbonite:', gc.karbonite())
+    if gc.round() >= 999:
+        print("Total Units: {}".format(len(gc.units())))
 
     # frequent try/catches are a good idea
     try:
