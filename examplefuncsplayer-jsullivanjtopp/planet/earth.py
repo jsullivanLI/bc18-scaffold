@@ -4,13 +4,24 @@ import sys
 import traceback
 
 directions = list(bc.Direction)
+max_rockets = 5
 
+
+def count_units(units, unitType):
+    # counting units of a certain type
+    result = 0
+    for unit in units:
+        if unit.unit_type == unitType:
+            result = result + 1
+
+    return result
 
 def do_planet_tasks(gc: bc.GameController):
     my_team = gc.team()
     # walk through our units:
     for unit in gc.my_units():
-
+        if unit.unit_type == bc.UnitType.Rocket:
+            print("I'm a rocket!")
         # send some rockets
         if unit.unit_type == bc.UnitType.Rocket:
             if not unit.rocket_is_used():
@@ -68,7 +79,7 @@ def do_planet_tasks(gc: bc.GameController):
         d = random.choice(directions)
 
         # or, try to build a rocket:
-        if gc.karbonite() > bc.UnitType.Rocket.blueprint_cost() and gc.can_blueprint(unit.id, bc.UnitType.Rocket, d):
+        if gc.karbonite() > bc.UnitType.Rocket.blueprint_cost() and gc.can_blueprint(unit.id, bc.UnitType.Rocket, d) and count_units(gc.my_units(), bc.UnitType.Rocket) < max_rockets:
             gc.blueprint(unit.id, bc.UnitType.Rocket, d)
         elif gc.karbonite() > bc.UnitType.Factory.blueprint_cost() and gc.can_blueprint(unit.id, bc.UnitType.Factory, d):
             gc.blueprint(unit.id, bc.UnitType.Factory, d)
